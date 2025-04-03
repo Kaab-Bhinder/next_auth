@@ -8,13 +8,21 @@ import toast from "react-hot-toast";
 connect()
 export async function POST(req: NextRequest) {
   const { username, email, password } = await req.json();
-  const salt= await bcryptjs.genSalt(10);
-  const hashedPassword = await bcryptjs.hash(password, salt);
+
+  // Check if all fields are provided
+  if (!username || !email || !password) {
+    return NextResponse.json(
+      { error: "All fields are required", success: false },
+      { status: 400 }
+    );
+  }
   // Check if the user already exists 
   const user=await User.findOne({email})
   if(user){
-    return NextResponse.json({error:"User already exists", sucess:"false-user-exists"}, {status:400})
+    return NextResponse.json({error:"User already exists", success:false}, {status:400})
   }
+  const salt= await bcryptjs.genSalt(10);
+  const hashedPassword = await bcryptjs.hash(password, salt);
   try {
     const newUser = new User({
       username,

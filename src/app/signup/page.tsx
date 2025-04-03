@@ -28,13 +28,22 @@ const page = () => {
   const onSignup = async () => {
     try {
       setLoading(true);
-      const response = axios.post("/api/users/signup", user);
+      const response = await axios.post("/api/users/signup", user);
       console.log("signup response", response);
-      router.push("/login");
-      toast.success("User created successfully. Please login to continue.");
+      if (response.data.success) {
+        router.push("/login");
+        toast.success("User created successfully. Please login to continue.");
+      } else {
+        // Show the backend error message here if it exists
+        toast.error(response.data.error || "Signup failed.");
+      }
     } catch (error: any) {
       console.log(error.message);
-      toast.error("Error signing up. Please try again later.");
+      // Display the error message if it exists, otherwise show the generic message
+      toast.error(
+        error.response?.data?.error ||
+          "Error signing up. Please try again later."
+      );
     } finally {
       setLoading(false);
     }
