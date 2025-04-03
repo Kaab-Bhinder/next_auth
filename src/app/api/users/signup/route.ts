@@ -3,6 +3,7 @@ import { sendEmail } from "@/helpers/mailer";
 import User from "@/models/userModel";
 import bcryptjs from "bcryptjs";
 import { NextResponse , NextRequest} from "next/server";
+import toast from "react-hot-toast";
 
 connect()
 export async function POST(req: NextRequest) {
@@ -12,10 +13,8 @@ export async function POST(req: NextRequest) {
   // Check if the user already exists 
   const user=await User.findOne({email})
   if(user){
-    return NextResponse.json({error:"User already exists"}, {status:400})
+    return NextResponse.json({error:"User already exists", sucess:"false-user-exists"}, {status:400})
   }
-  
-
   try {
     const newUser = new User({
       username,
@@ -27,7 +26,7 @@ export async function POST(req: NextRequest) {
   // Send verification email
   await sendEmail({email,emailTYpe:"VERIFY",userID:savedUser._id});  // Send response
 
-  return NextResponse.json({ message: "User created successfully",success:true,savedUser } ,{ status: 201 });
+  return NextResponse.json({ message: "User created successfully",success:true,savedUser } ,{ status: 200 });
   } catch (error:any) {
     return NextResponse.json({ error: error.message}, { status: 500 });
   }
