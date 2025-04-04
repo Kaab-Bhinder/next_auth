@@ -1,10 +1,9 @@
 "use client";
-import React, { use, useEffect } from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import axios, { Axios } from "axios";
+import axios from "axios";
 import toast from "react-hot-toast";
-import Container from "@/components/container";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 
 const page = () => {
@@ -31,11 +30,15 @@ const page = () => {
         router.push("/profile");
         toast.success("Login successful. Welcome back!");
       } else {
-        toast.error(response.data.error);
+        // Show the backend error message here if it exists
+        toast.error(response.data.error || "Signup failed.");
       }
     } catch (error: any) {
       console.log(error.message);
-      toast.error("Error signing up. Please try again later.");
+      toast.error(
+        error.response?.data?.error ||
+          "Error signing up. Please try again later."
+      );
     } finally {
       setLoading(false);
     }

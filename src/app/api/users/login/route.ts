@@ -11,11 +11,11 @@ export async function POST(req: NextRequest) {
     const {email,password} = reqBody
     const user=await User.findOne({email})
     if(!user){
-      return NextResponse.json({error:"User not found"}, {status:400})
+      return NextResponse.json({error:"User not found",success:false}, {status:400})
     }
     const isPasswordCorrect = await bcryptjs.compare(password, user.password)
     if(!isPasswordCorrect){
-      return NextResponse.json({error:"Invalid credentials"}, {status:400})
+      return NextResponse.json({error:"Invalid credentials",success:false}, {status:400})
     }
     const tokenData={
       id:user._id,
