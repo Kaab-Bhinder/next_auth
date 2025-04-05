@@ -19,16 +19,21 @@ var transport = nodemailer.createTransport({
     pass: "14a5d5b00cc886"
   }
 });
-const mailOptions={
-  from:"kaabbhinder28@gmail.com",
-  to:email,
-  subject:emailType==="VERIFY"?"Verify Your Email":"Reset Your Password",
-  html:`<p>Click <a href="${process.env.domain}/verifyemail?token=${hashedToken}">here</a> to ${emailType==="VERIFY" ? "Verify your email":"Reset your password"} 
-  or copy paste the link in your browser
-  <br> ${process.env.domain}/verifyemail?token=${hashedToken}
-  </p>`
+const link = `${process.env.domain}/${emailType === "VERIFY" ? "verifyemail" : "resetpassword"}?token=${hashedToken}`;
 
-}
+const mailOptions = {
+  from: "kaabbhinder28@gmail.com",
+  to: email,
+  subject: emailType === "VERIFY" ? "Verify Your Email" : "Reset Your Password",
+  html: `
+    <p>
+      Click <a href="${link}">here</a> to ${emailType === "VERIFY" ? "verify your email" : "reset your password"}, 
+      or copy and paste the link below into your browser:<br>
+      ${link}
+    </p>
+  `,
+};
+
 const mailresponse=await transport.sendMail(mailOptions);
 return mailresponse;
   } catch(error:any){
